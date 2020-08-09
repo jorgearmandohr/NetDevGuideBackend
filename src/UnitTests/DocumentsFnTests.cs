@@ -1,5 +1,7 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 using Domain.Model.Entities;
@@ -32,26 +34,38 @@ namespace UnitTests
             _docRepository = new Mock<IRepository<Document>>(MockBehavior.Default);
         }
 
-        private DocumentsFn CreateDocumentsFn()
+        //private DocumentsFn CreateDocumentsFn()
+        //{
+        //    _docRepository.Setup(x => x.GetByExpression(It.IsAny<Expression<Func<Document, bool>>>()))
+        //        .Returns(
+        //        new List<Document>
+        //        {
+        //            new Document
+        //            {
+        //                Id = 1,
+        //                Name = "SomeName.docx",
+        //                Reference = DOC_NUMB
+        //            }
+        //        }.AsQueryable());
+        //    return new DocumentsFn(_docRepository.Object);
+        //}
+
+        [Fact]
+        public async Task Run_StateUnderTest_ExpectedBehavior()
         {
-            _docRepository.SetReturnsDefault(
-                new List<Document>
-                {
+            // Arrange
+            _docRepository.Setup(x => x.GetByExpression(It.IsAny<Expression<Func<Document, bool>>>()))
+               .Returns(
+               new List<Document>
+               {
                     new Document
                     {
                         Id = 1,
                         Name = "SomeName.docx",
                         Reference = DOC_NUMB
                     }
-                }.AsQueryable());
-            return new DocumentsFn(_docRepository.Object);
-        }
-
-        [Fact]
-        public async Task Run_StateUnderTest_ExpectedBehavior()
-        {
-            // Arrange
-            var documentsFn = CreateDocumentsFn();
+               }.AsQueryable());
+            var documentsFn = new DocumentsFn(_docRepository.Object);
             var request = RequestHelper.MockRequest("{\"example\":\"\"}");
 
             // Act
@@ -62,6 +76,24 @@ namespace UnitTests
 
             // Assert
             Assert.IsType<OkObjectResult>(result);
+        }
+
+        [Fact]
+        public async Task Run_StateUnderTest_FailBehavior()
+        {
+            // Arrange
+            _docRepository.SetReturnsDefault(new List<Document>().AsQueryable());
+            var documentsFn = new DocumentsFn(_docRepository.Object);
+            var request = RequestHelper.MockRequest("{\"example\":\"\"}");
+
+            // Act
+            var result = await documentsFn.Run(
+                request,
+                null,
+                _logger);
+
+            // Assert
+            Assert.IsType<NotFoundObjectResult>(result);
         }
     }
 }

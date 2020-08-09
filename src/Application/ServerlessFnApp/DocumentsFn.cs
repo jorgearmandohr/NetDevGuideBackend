@@ -30,15 +30,15 @@ namespace ServerlessFnApp
             string documentId,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-            log.LogInformation("request received documentId eq ", documentId);
+            //log.LogInformation("C# HTTP trigger function processed a request.");
+            //log.LogInformation("request received documentId eq ", documentId);
             //var docs = _dbCotext.Documents.ToList();
             //var doc = await _dbCotext.Documents.FirstOrDefaultAsync(x => x.Reference == documentId);
             var doc = _docRepository.GetByExpression(x => x.Reference == documentId).FirstOrDefault();
             //string name = req.Query["name"];
             /*Create a helper in architecture to deserialize request*/
-            string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
+            //string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
+            //dynamic data = JsonConvert.DeserializeObject(requestBody);
             //name = name ?? data?.name;
             string name = doc?.Name;
 
