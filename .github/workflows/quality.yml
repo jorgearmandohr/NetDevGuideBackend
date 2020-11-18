@@ -24,7 +24,7 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal
     - name: SonarQube Scan
-      uses: kitabisa/sonarqube-action@v1.1.0
+      uses: sonarsource/sonarcloud-github-action@master
       with:
         host: ${{ secrets.SONARQUBE_HOST }}
         login: ${{ secrets.SONAR_TOKEN_TEST1 }}
