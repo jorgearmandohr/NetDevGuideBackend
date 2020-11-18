@@ -38,7 +38,7 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_TEST1 }}
         shell: powershell
         run: |
-          .\.sonar\scanner\dotnet-sonarscanner begin /k:"jorgearmandohr_NetDevGuideBackend" /o:"netdevguidejahr" /d:sonar.login="${{ secrets.SONAR_TOKEN_TEST1 }}" /d:sonar.host.url="https://sonarcloud.io"
+          .\.sonar\scanner\dotnet-sonarscanner begin /k:"jorgearmandohr_NetDevGuideBackend" /o:"netdevguidejahr" /d:sonar.login="${{ secrets.SONAR_TOKEN_TEST1 }}" /d:sonar.host.url="https://sonarcloud.io" /d:sonar.scanner.force-deprecated-java-version=true
           dotnet restore
           dotnet build --configuration Release --no-restore
           dotnet test --no-restore --verbosity normal
